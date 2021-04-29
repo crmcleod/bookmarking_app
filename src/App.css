@@ -1,38 +1,99 @@
 .App {
   text-align: center;
+  height: 100vh;
+  width: 100vw;
+  background-image: linear-gradient(10deg, #57d5a9ee 30%, #5587cce3 30%), url('./staff_01.jpeg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: bottom;
+  overflow: scroll;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+#nothing-to-see{
+  margin-top: 40vh;
   color: white;
+  font-size: 2rem;
+}
+.link {
+  width: 80%;
+  /* height: 3rem; */
+  margin: 0.5rem auto 0.5rem auto;
+  align-items: center;
+  border-top: white solid 2px;
+  border-bottom: white solid 2px;
+  color: #ffffffee;
+  font-weight: 600;
+  display: grid;
+  grid-template-columns: 1fr 1fr 10% 15%;
+  transition: 0.15s ease all;
+  grid-column-gap: 0.2rem;
+}
+.link:hover {
+  background-color: rgba(0, 0, 0, 0.356);
+}
+.link a, a:visited {
+  width: fit-content;
+  color: #ffffffee;
+  justify-self: center;
+}
+#link-wrapper{
+  width: 100%;
+  height: 80vh;
+  overflow: scroll;
+}
+#filter__wrapper {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+  width: 90vw;
+  padding: 0 5vw;
+  display: flex;
+  flex-wrap: wrap;
+  height: 3rem;
+  align-content: center;
+
+}
+#filter__wrapper > p {
+  align-content: center;
+  justify-content: space-around;
+  color: white;
+  width: inherit;
+  position: absolute;
 }
 
-.App-link {
-  color: #61dafb;
+.filter{
+  margin: 0.5rem;
+  padding: 0.5rem 1rem;
+  width: fit-content;
+  background-color: #57d5a9ee;
+  color: white;
+  border-radius: 2rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 0 0.6rem .2rem rgba(0, 0, 0, 0.233);
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.delete-cross {
+  cursor: pointer;
+}
+#header-wrapper{
+  margin-top: 2rem;
+  width: 70vw;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.button-hover {
+  transition: 0.2s all ease;
+}
+.button-hover:hover{
+  transform: scale(1.05);
+  filter: brightness(120%);
+  color: rgb(58, 58, 58);
+}
+.link-date{
+  font-size: 90%;
+  color:rgb(255, 255, 255);
 }

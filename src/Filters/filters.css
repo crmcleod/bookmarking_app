@@ -1,0 +1,12 @@
+.toggle-order__button {
+    margin: 0.5rem;
+    height: 2.25rem;
+    width: 10rem;
+    background-color: #57d5a9ee;
+    color: white;
+    border-radius: 2rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 0 0.6rem .2rem rgba(0, 0, 0, 0.274);
+}
