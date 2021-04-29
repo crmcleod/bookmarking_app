@@ -39,14 +39,14 @@ const MainContainer = () => {
     }, [setAddLinksActive])
     
     const getLinksFromDatabase = () => {
-        axios.get('http://localhost:8080/links')
+        axios.get('https://bookmarko-server.herokuapp.com/links')
             .then(res => dateSortLinks(res.data))
             .then(res => {
                 setBookmarks(res)
                 setFilteredBookmarks(res)
             })
 
-        axios.get('http://localhost:8080/tags')
+        axios.get('https://bookmarko-server.herokuapp.com/tags')
             .then(res => {
                 const newTags = res.data.map((tag) => {
                     return <option key={tag.id} value={tag.id}>{tag.tag}</option>
@@ -54,7 +54,7 @@ const MainContainer = () => {
                 setTags(newTags)
             })
 
-        axios.get('http://localhost:8080/users')
+        axios.get('https://bookmarko-server.herokuapp.com/users')
             .then(res => {
                 const newUsers = res.data.map((user) => {
                     return <option key={user.id} value={user.id}>{user.name}</option>

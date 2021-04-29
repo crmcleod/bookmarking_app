@@ -76,23 +76,23 @@ const AddLinkContainer = ({
     }
 
     const postData = () => {
-        axios.post('http://localhost:8080/users', user)
+        axios.post('https://bookmarko-server.herokuapp.com/users', user)
             .then( res => {
-                axios.post('http://localhost:8080/links', { ...link,
+                axios.post('https://bookmarko-server.herokuapp.com/links', { ...link,
                     "linkURL": checkLinkPrefix(link.linkURL)+link.linkURL,
                     "user": {"id": res.data.id },
                     "dateAdded": `${getCustomDate()}`,
                     "tags": []
                 })
                     .then( res => {
-                        axios.post('http://localhost:8080/tags',{
+                        axios.post('https://bookmarko-server.herokuapp.com/tags',{
                             "tag": tags[0].tag,
                             "links": [{
                                 "id": res.data.id
                             }]
                         })
                         .then( res => {
-                            axios.get(`http://localhost:8080/links/${res.data.links[0].id}`)
+                            axios.get(`https://bookmarko-server.herokuapp.com/links/${res.data.links[0].id}`)
                                 .then( res => {
                                     setBookmarks([...bookmarks, res.data])
                                 })
