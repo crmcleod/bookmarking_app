@@ -8,7 +8,8 @@ const AddLinkContainer = ({
     setAddLinksActive,
     bookmarks,
     setBookmarks,
-    getLinksFromDatabase
+    getLinksFromDatabase,
+    getPrevious
 
 }) => {
 
@@ -46,10 +47,12 @@ const AddLinkContainer = ({
 
     const handleUserInput = (e) => {
         setUser({...user, name: e.target.value})
+        console.log(e)
     }
 
     const handleTagSelect = (e) => {
         setTags([{ tag: e.target.value}]) 
+        console.log(e)
     }
 
     const getCustomDate = () => {
@@ -76,23 +79,23 @@ const AddLinkContainer = ({
     }
 
     const postData = () => {
-        axios.post('https://bookmarko-server.herokuapp.com/users', user)
+        axios.post(`${process.env.REACT_APP_SERVER_URL}users`, user)
             .then( res => {
-                axios.post('https://bookmarko-server.herokuapp.com/links', { ...link,
+                axios.post(`${process.env.REACT_APP_SERVER_URL}links`, { ...link,
                     "linkURL": checkLinkPrefix(link.linkURL)+link.linkURL,
                     "user": {"id": res.data.id },
                     "dateAdded": `${getCustomDate()}`,
                     "tags": []
                 })
                     .then( res => {
-                        axios.post('https://bookmarko-server.herokuapp.com/tags',{
+                        axios.post(`${process.env.REACT_APP_SERVER_URL}tags`,{
                             "tag": tags[0].tag,
                             "links": [{
                                 "id": res.data.id
                             }]
                         })
                         .then( res => {
-                            axios.get(`https://bookmarko-server.herokuapp.com/links/${res.data.links[0].id}`)
+                            axios.get(`${process.env.REACT_APP_SERVER_URL}links/${res.data.links[0].id}`)
                                 .then( res => {
                                     setBookmarks([...bookmarks, res.data])
                                 })
@@ -109,6 +112,14 @@ const AddLinkContainer = ({
         setAddLinksActive(!active)
     }
 
+    const userOptions = getPrevious().users.map((user) => {
+        return <option className='user-datalist-option' key={user.id} label={user.id} value={user.name}>{`ID: ${user.id}`}</option>
+    } )
+
+    const tagOptions = getPrevious().tags.map((tag) => {
+        return <option key={tag.id} label={tag.id} value={tag.tag}>{`ID: ${tag.id}`}</option>
+    } )
+
     if( !active) return null
 
     return(
@@ -118,18 +129,16 @@ const AddLinkContainer = ({
                 <div className="add-link__input-wrapper">
                     <input className="add-link__input" required="true" type="text" placeholder="Enter Link" onChange={handleLinkInput} value={link.linkURL} />
                     <input className="add-link__input add-link__input--description"  required type="text" placeholder="Enter Link description" onChange={handleLinkDescriptionInput} value={link.linkTitle} />
-                    <input className="add-link-user__datalist add-link__input" type="search" required list="user" placeholder="Search users or add new" onChange={handleUserInput} value={user.name}></input>
-                    <datalist id="user" >
+                    <input className="add-link-user__datalist add-link__input" type="search" required list="user" placeholder="Search users or add new" onChange={handleUserInput} value={user.id}></input>
+                    <datalist id="user" onChange={handleUserInput} className='user-datalist' >
                         <option data-value='NOT SHOWN' value="No user">No user</option>
-                        <option value="sherry"></option>
-                        <option value="alex"></option>
+                        {userOptions}
                     </datalist>
                     <input type="hidden" name="answer"></input>
                     <input className="add-link__input" list="tags" type="search" placeholder="Search tags or add new" onChange={handleTagSelect} value={tags.length > 0 ? tags[0].tag : ""}/>
                     <datalist id="tags" className="add-link-tag__select" >
                         <option value="Untagged"></option>
-                        <option value="something1">something1</option>
-                        <option value="something2">something2</option>
+                        {tagOptions}
                     </datalist>
                     <button type="submit" className="add-link__button">Add new link!</button>
                 </div>

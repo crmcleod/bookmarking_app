@@ -14,18 +14,44 @@ const MainContainer = () => {
     const [ userFilters, setUserFilters ] = useState([])
     const [ dateNewFirst, setDateNewFirst ] = useState(true)
 
+    const resetSelect = ( cssSelecter ) => {
+        document.querySelector( `#${cssSelecter}` ).selectedIndex = 0
+    }
+
+    useEffect(() => {
+        resetSelect('tags') ; resetSelect('user')
+    }, [filters, userFilters])
 
     const handleDeleteFilter = (e) => {
         const newFilters = filters.filter(x => x !== e.target.previousSibling.data)
+        const newUserFilters = userFilters.filter(x => x !== e.target.previousSibling.data)
         const uniqueFilters = [...new Set(newFilters)];
+        const uniqueUserFilters = [...new Set(newUserFilters)]
         setFilters(uniqueFilters)
+        setUserFilters(uniqueUserFilters)
     }
 
-    const filterDisplay = filters.map((filter) => {
+    const allFilters = [...filters, ...userFilters]
+    const filterDisplay = allFilters.map((filter) => {
         return(
             <div key={filter} className='filter'>{filter}<span className='delete-cross' onClick={handleDeleteFilter}>&nbsp; &#x2717;</span></div>
         )
     })
+
+    const getPreviousUsersAndTags = () => {
+
+        const users = bookmarks.map((bookmark) => {
+            return bookmark.user
+        })
+        const tags = bookmarks.map((bookmark) => {
+            return bookmark.tags[0]
+        })
+
+        return {
+            users,
+            tags
+        }
+    }
 
     const dateSortLinks = (dates) => {
         const newDates = dates.sort((a, b) => {
@@ -39,14 +65,14 @@ const MainContainer = () => {
     }, [setAddLinksActive])
     
     const getLinksFromDatabase = () => {
-        axios.get('https://bookmarko-server.herokuapp.com/links')
+        axios.get(`${process.env.REACT_APP_SERVER_URL}links`)
             .then(res => dateSortLinks(res.data))
             .then(res => {
                 setBookmarks(res)
                 setFilteredBookmarks(res)
             })
 
-        axios.get('https://bookmarko-server.herokuapp.com/tags')
+        axios.get(`${process.env.REACT_APP_SERVER_URL}tags`)
             .then(res => {
                 const newTags = res.data.map((tag) => {
                     return <option key={tag.id} value={tag.id}>{tag.tag}</option>
@@ -54,7 +80,7 @@ const MainContainer = () => {
                 setTags(newTags)
             })
 
-        axios.get('https://bookmarko-server.herokuapp.com/users')
+        axios.get(`${process.env.REACT_APP_SERVER_URL}users`)
             .then(res => {
                 const newUsers = res.data.map((user) => {
                     return <option key={user.id} value={user.id}>{user.name}</option>
@@ -67,10 +93,22 @@ const MainContainer = () => {
         let newFilteredBookmarks = []
         let tempFilteredBookmarks
 
-        if(filters.length === 0) {
+        if(filters.length === 0 && userFilters.length === 0) {
             setFilteredBookmarks(dateSortLinks(bookmarks))
             setDateNewFirst(true)
-        } else {
+        } else if (
+            userFilters.length > 0 && filters.length === 0
+        ) {
+            for(let filter of userFilters) {
+                tempFilteredBookmarks = bookmarks.filter((bookmark) => {
+                    return bookmark.user.name === filter
+                })
+                newFilteredBookmarks.push(...tempFilteredBookmarks)
+                setFilteredBookmarks(dateSortLinks([...new Set(newFilteredBookmarks)]))
+            }
+        } else if (
+            userFilters.length === 0 && filters.length > 0
+        ){
             for(let filter of filters) {
                 tempFilteredBookmarks = bookmarks.filter((bookmark) => {
                     return bookmark.tags[0].tag === filter || bookmark.user.name === filter
@@ -78,6 +116,19 @@ const MainContainer = () => {
                 newFilteredBookmarks.push(...tempFilteredBookmarks)
                 setFilteredBookmarks(dateSortLinks([...new Set(newFilteredBookmarks)]))
             }
+    } else {
+        newFilteredBookmarks = []
+        tempFilteredBookmarks = null
+        for(let filter of filters) {
+            for(let user of userFilters) {
+
+                tempFilteredBookmarks = bookmarks.filter((bookmark) => {
+                    return (bookmark.tags[0].tag === filter && bookmark.user.name === user)
+                })
+                newFilteredBookmarks.push(...tempFilteredBookmarks)
+                setFilteredBookmarks(dateSortLinks([...new Set(newFilteredBookmarks)]))
+            }
+        }
     }
 }
 
@@ -91,7 +142,7 @@ const MainContainer = () => {
 
     useEffect(() => {
         filterBookmarks()
-    }, [filters, bookmarks])
+    }, [filters, userFilters, bookmarks])
 
     const bookmarkConditional = () => (filteredBookmarks.length > 0 ? filteredBookmarks : bookmarks)
 
@@ -103,12 +154,12 @@ const MainContainer = () => {
         <h2 id='nothing-to-see'>Nothing to see here at the moment &nbsp;  👀</h2> :
         bookmarkConditional().map((bookmark) => {
             return(
-                <div className='link' key={bookmark.id}>
+                <li className='link' key={bookmark.id}>
                     <a className="link-anchor" noopener rel="noreferrer" target="_blank" href={bookmark.linkURL}>{bookmark.linkTitle}</a>
                     <p>{bookmark.tags[0].tag}</p>
                     <p>{bookmark.user.name}</p>
                     <p className="link-date">{formatDate(bookmark.dateAdded)}</p>
-                </div>
+                </li>
             )
         })
 
@@ -120,12 +171,15 @@ const MainContainer = () => {
                 bookmarks={bookmarks}
                 setBookmarks={setBookmarks}
                 getLinksFromDatabase={getLinksFromDatabase}
+                getPrevious={getPreviousUsersAndTags}
             />
             
             <div id="header-wrapper">
                 <Filters
                     filters={ filters }
                     setFilters={ setFilters }
+                    userFilters={ userFilters }
+                    setUserFilters={ setUserFilters }
                     active={!addLinksActive}
                     tags={tags.length > 0 ? tags : null} 
                     users={users.length > 0 ? users : null}
@@ -156,7 +210,9 @@ const MainContainer = () => {
             {addLinksActive ? 
                 null : 
                 <div id='link-wrapper'>
-                    {bookmarksToDisplay}
+                    <ul>
+                        {bookmarksToDisplay}
+                    </ul>
                 </div>
             }
         </>

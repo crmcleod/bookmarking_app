@@ -10,7 +10,9 @@ const Filters = ({
     setFilters,
     reverseOrder,
     dateNewFirst,
-    setDateNewFirst
+    setDateNewFirst,
+    userFilters,
+    setUserFilters
 }) => {
    
     const handleTagSelect = (e) => {
@@ -22,7 +24,11 @@ const Filters = ({
     }
 
     const handleUserSelect = (e) => {
-        handleTagSelect(e)
+        const sel = e.target.options
+        const newFilters = [...userFilters]
+        newFilters.push(sel[sel.selectedIndex].text)
+        const uniqueFilters = [...new Set(newFilters)];
+        setUserFilters(uniqueFilters)
     } 
 
     const handleDateSortClick = () => {
