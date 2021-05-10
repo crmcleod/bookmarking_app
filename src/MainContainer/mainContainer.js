@@ -201,7 +201,7 @@ const MainContainer = () => {
                     <>
                         <div id="filter__wrapper">
                             <p>
-                                {filters.length === 0 && 'No filters selected'}
+                                {filters.length === 0 && userFilters.length === 0 && 'No filters selected'}
                             </p>
                             {filterDisplay}
                         </div>
