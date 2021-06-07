@@ -11,7 +11,7 @@
     color: white;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    /* justify-content: space-evenly; */
     align-items: center;
 }
 .add-link__input-wrapper{
@@ -37,7 +37,9 @@
 
 }
 .add-link__button:hover,
-#form-close-button:hover {
+#form-close-button:hover,
+#form-close-button *:hover
+{
     transform: scale(1.03);
     box-shadow: 0 0 0.5rem 0.2rem #122c23b9;
 }
@@ -71,17 +73,17 @@
     outline: none;
 }
 #form-close-button {
+    position: relative;
     background-color: blue;
     align-self: flex-end;
     text-align: center;
-    vertical-align: top;
     margin-right: 2rem;
     padding:0.3rem 0.3rem 0.2rem 0.3rem;
     border-radius: 50%;
     width: 1.5rem;
     height: 1.5rem;
-    position: absolute;
-    margin-top: -25%;
+    /* position: absolute; */
+    /* margin-top: -5%; */
     background-color: #57D5A9;
     font-weight: 900;
     font-size: 1.1rem;

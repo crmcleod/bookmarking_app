@@ -2,11 +2,15 @@
   text-align: center;
   height: 100vh;
   width: 100vw;
-  background-image: linear-gradient(10deg, #57d5a9ee 30%, #5587cce3 30%), url('./staff_01.jpeg');
+  /* background-image: linear-gradient(10deg, #57d5a9ee 30%, #5587cce3 30%), url('./staff_01.jpeg'); */
+  background-image: linear-gradient(10deg, #e4b95c 30%, #5587cce3 30%);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: bottom;
   overflow: scroll;
+}
+button, select {
+  cursor: pointer;
 }
 #nothing-to-see{
   margin-top: 40vh;
@@ -98,4 +102,99 @@
 .link-date{
   font-size: 90%;
   color:rgb(255, 255, 255);
+}
+
+#create-signup-wrapper{
+  display: flex;
+  flex-direction: column;
+  width: 10rem;
+  height: 100vh;
+  margin: auto;
+  justify-content: center;
+}
+#create-signup-wrapper {
+  width: 12rem;
+}
+#create-signup-wrapper > *:not(:last-child){
+  margin-bottom: 1rem;
+}
+@media only screen and ( max-width: 1000px ) {
+  #link-wrapper > ul {
+    margin-block-start: 0 !important;
+    padding-inline-start: 0 !important;
+  }
+  .link{
+    grid-template-columns: 1fr 1fr 1fr 15%;
+  }
+}
+
+@media only screen and ( max-width: 850px ) {
+  .link{
+    width: 95%;
+  }
+}
+
+#signup-form{
+  padding: 5rem;
+  border-radius: 0.3rem;
+  display: flex;
+  justify-self: center;
+  margin: auto;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 20rem !important;
+  height: 20rem;
+  background-color: rgba(0, 0, 0, 0.521);
+  box-shadow: 0rem 0.3rem 1rem 0.3rem rgba(0, 0, 0, 0.486);
+}
+#signup-form > span > input, button {
+  padding: 0.5rem;
+  border: none;
+  outline: none;
+  border-radius: 0.2rem;
+  border: inset 0.15rem rgb(120, 187, 167);
+}
+#signup-form > input,
+#signin-form > input {
+  height: 2rem;
+}
+#signup-form > span,
+#signin-form > span {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+}
+#signup-form span button,
+#signin-form span button {
+  width: 45%;
+  border: 0.1rem solid rgb(120, 187, 167);
+  background-image: linear-gradient(200deg, rgb(239, 245, 243), rgba(100, 197, 168, 0.267)) !important;
+}
+#sign-up-wrapper,
+#signin-wrapper{
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+}
+#signin-form{
+  padding: 3rem;
+  border-radius: 0.3rem;
+  display: flex;
+  justify-self: center;
+  margin: auto;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 20rem !important;
+  height: 12rem;
+  background-color: rgba(0, 0, 0, 0.521);
+  box-shadow: 0rem 0.3rem 1rem 0.3rem rgba(0, 0, 0, 0.486);
+}
+#keep-signed-in, #keep-signed-in *{
+  justify-content: unset !important;
+  margin: 0.5rem 1rem 0.5rem 0;
+  color: white;
+  display: flex;
+  align-items: center;
 }

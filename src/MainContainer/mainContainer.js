@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react'
 import AddLinkContainer from '../AddLink/addLinkContainer'
 import Filters from '../Filters/filters'
 
-const MainContainer = () => {
+const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut, setExistingUser, setEncryptedPassword, setUserName, setPassword}) => {
 
     const [ addLinksActive, setAddLinksActive ] = useState( false )
     const [ bookmarks, setBookmarks ] = useState([])
@@ -20,7 +20,7 @@ const MainContainer = () => {
 
     useEffect(() => {
         resetSelect('tags') ; resetSelect('user')
-    }, [filters, userFilters])
+    }, [active, filters, userFilters])
 
     const handleDeleteFilter = (e) => {
         const newFilters = filters.filter(x => x !== e.target.previousSibling.data)
@@ -62,30 +62,52 @@ const MainContainer = () => {
 
     useEffect(() => {
         getLinksFromDatabase()
-    }, [setAddLinksActive])
-    
+    }, [ ,active,setAddLinksActive])
+
+    useEffect(() => {
+        getLinksFromDatabase()
+        return() => {
+            setBookmarks('')
+            setID('')
+        }
+    }, [])
+
+    const config = {
+        headers: {
+            "Authorization": authToken
+        }
+    }
     const getLinksFromDatabase = () => {
-        axios.get(`${process.env.REACT_APP_SERVER_URL}links`)
+       
+        axios.get(`${process.env.REACT_APP_SERVER_URL}api/links?id=${id}`, config)
             .then(res => dateSortLinks(res.data))
             .then(res => {
                 setBookmarks(res)
                 setFilteredBookmarks(res)
             })
 
-        axios.get(`${process.env.REACT_APP_SERVER_URL}tags`)
+        axios.get(`${process.env.REACT_APP_SERVER_URL}api/tags?id=${id}`, config)
             .then(res => {
-                const newTags = res.data.map((tag) => {
-                    return <option key={tag.id} value={tag.id}>{tag.tag}</option>
-                })
-                setTags(newTags)
+                if(res.data.length > 0){
+                    const newTags = res.data.map((tag) => {
+                        return <option key={tag.id} value={tag.id}>{tag.tag}</option>
+                    })
+                    setTags(newTags)
+                } else {
+                    return null
+                }
             })
 
-        axios.get(`${process.env.REACT_APP_SERVER_URL}users`)
+        axios.get(`${process.env.REACT_APP_SERVER_URL}api/users?id=${id}`, config)
             .then(res => {
-                const newUsers = res.data.map((user) => {
-                    return <option key={user.id} value={user.id}>{user.name}</option>
-                })
-                setUsers(newUsers)
+                if(res.data.length > 0){
+                    const newUsers = res.data.map((user) => {
+                        return <option key={user.id} value={user.id}>{user.name}</option>
+                    })
+                    setUsers(newUsers)
+                } else {
+                    return null
+                }
              })
     }
 
@@ -141,7 +163,7 @@ const MainContainer = () => {
     }
 
     useEffect(() => {
-        filterBookmarks()
+        bookmarks.length > 0 && filterBookmarks() 
     }, [filters, userFilters, bookmarks])
 
     const bookmarkConditional = () => (filteredBookmarks.length > 0 ? filteredBookmarks : bookmarks)
@@ -163,6 +185,19 @@ const MainContainer = () => {
             )
         })
 
+        const handleSignOut = () => {
+            localStorage.setItem('keep-signed-in-bookmarko', false)
+            setSignedIn(false)
+            setSignedOut(true)
+            setExistingUser(true)
+            setUserName('')
+            setEncryptedPassword('')
+            setPassword('')
+        }
+
+        if(!active) {
+            return null
+        }
     return(
         <>
             <AddLinkContainer 
@@ -172,6 +207,8 @@ const MainContainer = () => {
                 setBookmarks={setBookmarks}
                 getLinksFromDatabase={getLinksFromDatabase}
                 getPrevious={getPreviousUsersAndTags}
+                id={id}
+                authToken={config}
             />
             
             <div id="header-wrapper">
@@ -193,7 +230,10 @@ const MainContainer = () => {
                 />
                 {addLinksActive ? 
                     null : 
-                    <button id="add-link-button" className="filter button-hover" onClick={()=> setAddLinksActive(true)}>add new bookmark</button>
+                    <>
+                        <button id="add-link-button" className="filter button-hover" onClick={()=> setAddLinksActive(true)}>add new bookmark</button>
+                        <button onClick={handleSignOut}>Sign out</button>
+                    </>
                 }
                 </div>
                 {addLinksActive ? 

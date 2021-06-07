@@ -9,7 +9,9 @@ const AddLinkContainer = ({
     bookmarks,
     setBookmarks,
     getLinksFromDatabase,
-    getPrevious
+    getPrevious,
+    id,
+    authToken
 
 }) => {
 
@@ -79,23 +81,26 @@ const AddLinkContainer = ({
     }
 
     const postData = () => {
-        axios.post(`${process.env.REACT_APP_SERVER_URL}users`, user)
+        axios.post(`${process.env.REACT_APP_SERVER_URL}api/users`, user, authToken)
             .then( res => {
-                axios.post(`${process.env.REACT_APP_SERVER_URL}links`, { ...link,
+                axios.post(`${process.env.REACT_APP_SERVER_URL}api/links`, { ...link,
                     "linkURL": checkLinkPrefix(link.linkURL)+link.linkURL,
                     "user": {"id": res.data.id },
                     "dateAdded": `${getCustomDate()}`,
-                    "tags": []
-                })
+                    "tags": [],
+                    "appUser": {
+                        "id": id
+                    }
+                }, authToken)
                     .then( res => {
-                        axios.post(`${process.env.REACT_APP_SERVER_URL}tags`,{
+                        axios.post(`${process.env.REACT_APP_SERVER_URL}api/tags`,{
                             "tag": tags[0].tag,
                             "links": [{
                                 "id": res.data.id
                             }]
-                        })
+                        }, authToken)
                         .then( res => {
-                            axios.get(`${process.env.REACT_APP_SERVER_URL}links/${res.data.links[0].id}`)
+                            axios.get(`${process.env.REACT_APP_SERVER_URL}api/links/${res.data.links[0].id}`, authToken)
                                 .then( res => {
                                     setBookmarks([...bookmarks, res.data])
                                 })
