@@ -29,9 +29,11 @@ const AuthLayer = () => {
 
     const handleAuthSetting = () => {
         const auth = JSON.parse(localStorage.getItem(tokenName))
-        setAuth(auth)
-        setID(auth.id)
-        setAuthToken(`${auth.tokenType + ' ' + auth.accessToken}`)
+        if ( auth ){
+            setAuth(auth)
+            setID(auth.id)
+            setAuthToken(`${auth.tokenType + ' ' + auth.accessToken}`)
+        }
     }
     const handleFirstNameChange = (event) => {
         setFirstName(event.target.value)
@@ -76,16 +78,16 @@ const AuthLayer = () => {
         .catch(err => console.log(err))
     }
 
-    // useEffect(() => {
-    //     handleAuthSetting()
-    //     const signInImmediately = JSON.parse(localStorage.getItem('keep-signed-in-bookmarko'))
-    //     if(!existingUser){
-    //         setUserName(signInImmediately.username)
-    //         setEncryptedPassword(signInImmediately.password)}
-    //     if(userName && encryptedPassword && !existingUser) {
-    //         checkSignedInRequested(signInImmediately)
-    //     } 
-    // }, [userName, encryptedPassword])
+    useEffect(() => {
+        handleAuthSetting()
+        const signInImmediately = JSON.parse(localStorage.getItem('keep-signed-in-bookmarko'))
+        if(!existingUser){
+            setUserName(signInImmediately.username)
+            setEncryptedPassword(signInImmediately.password)}
+        if(userName && encryptedPassword && !existingUser) {
+            checkSignedInRequested(signInImmediately)
+        } 
+    }, [userName, encryptedPassword])
 
     const checkSignedInRequested = async (object) => {
         if(object.keepsignedin){
