@@ -81,7 +81,7 @@ const AuthLayer = () => {
     useEffect(() => {
         handleAuthSetting()
         const signInImmediately = JSON.parse(localStorage.getItem('keep-signed-in-bookmarko'))
-        if(!existingUser){
+        if(!existingUser && auth){
             setUserName(signInImmediately.username)
             setEncryptedPassword(signInImmediately.password)}
         if(userName && encryptedPassword && !existingUser) {
