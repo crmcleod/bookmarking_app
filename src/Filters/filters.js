@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 
 import './filters.css'
 
@@ -41,13 +41,13 @@ const Filters = ({
     }
     return(
         <>
-            <select id="tags" className="add-link__input add-link-tag__select" placeholder="Search tags" onChange={handleTagSelect}>
-                <option disabled selected>Filter by tag</option>
+            <select id="tags" defaultValue='Filter by tag' className="add-link__input add-link-tag__select" placeholder="Search tags" onChange={handleTagSelect}>
+                <option disabled>Filter by tag</option>
                 {tags}
             </select>
 
-            <select id="user" className="add-link-tag__select add-link__input" placeholder="Search users" onChange={handleUserSelect}>
-                <option disabled selected>Filter by user</option>
+            <select id="user" defaultValue='Filter by user' className="add-link-tag__select add-link__input" placeholder="Search users" onChange={handleUserSelect}>
+                <option disabled >Filter by user</option>
                 
                 {users}
             </select>

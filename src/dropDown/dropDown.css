@@ -1,0 +1,28 @@
+#dropdown-menu {
+    background-color: white;
+    width: 15rem;
+    height: 20vw;
+    overflow-x: scroll;
+    border-radius: 0.2rem;
+    box-shadow: 0.1rem 0.1rem 1rem 0.1rem rgba(0, 0, 0, 0.63);
+    display: none;
+    position: absolute;
+    margin-top: 2.5rem;
+}
+.dropdown-tags{
+    /* margin-top: 30% !important; */
+}
+
+#dropdown-menu > li {
+    color: black;
+    list-style: none;
+    width: 100%;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    transition: all 0.1s ease;
+    cursor: pointer;
+}
+
+#dropdown-menu > li:hover {
+    background-color: rgba(0, 0, 0, 0.144);
+}

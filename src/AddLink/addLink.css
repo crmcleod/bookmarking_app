@@ -26,7 +26,8 @@
     border: none;
     border-radius: 100px;
     padding: 1rem 2.3rem;
-    background-color: #57D5A9; 
+    background-color: #e4b95c; 
+    /* background-color: #57D5A9;  */
     color: inherit;
     text-transform: uppercase;
     font-weight: 600;
@@ -34,6 +35,7 @@
     font-size: 1rem;    
     transition: 0.3s ease;
     margin-top: 2rem;
+    box-sizing: border-box;
 
 }
 .add-link__button:hover,
@@ -44,8 +46,9 @@
     box-shadow: 0 0 0.5rem 0.2rem #122c23b9;
 }
 .add-link__button:focus {
-    border: none;
-    outline: none;
+    box-shadow: 0 0 0.5rem 0.2rem #122c23b9;
+    background-color: #ffcf66;  
+    color: #38485ff1;
 }
 .add-link__input {
     border: none;
@@ -57,7 +60,8 @@
     font-weight: 600;
     font-size: 0.7rem;
     text-align: center;
-    border: inset 2px #51c99f;
+    border: inset 2px #e4b95c;
+    /* border: inset 2px #51c99f; */
 
 }
 .prefixed {
@@ -84,9 +88,25 @@
     height: 1.5rem;
     /* position: absolute; */
     /* margin-top: -5%; */
-    background-color: #57D5A9;
+    background-color: #e4b95c; 
+    /* background-color: #57D5A9; */
     font-weight: 900;
     font-size: 1.1rem;
     cursor: pointer;
     transition: 0.3s ease;
+}
+.add-link-user__datalist,
+.add-link-tag__datalist
+{
+    background-image: url(./arrow.svg);
+    background-position: 95%;
+    background-size: 1rem;
+    background-repeat: no-repeat;
+}
+.add-link-user__datalist:focus,
+.add-link-user__datalist:active,
+.add-link-tag__datalist:focus,
+.add-link-tag__datalist:active
+{
+    background-image: none;
 }

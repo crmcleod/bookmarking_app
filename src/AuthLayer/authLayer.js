@@ -8,10 +8,11 @@ const tokenName = 'JWTBookmarkSite'
 const AuthLayer = () => {
 
     const [ newUser, setNewUser ] = useState(false)
-    const [ existingUser, setExistingUser ] = useState(false)
+    const [ signInScreen, setSignInScreen ] = useState(false)
     const [ signedOut, setSignedOut ] = useState(true)
     const [ signedIn, setSignedIn ] = useState(false)
     const [ keepSignedIn, setKeepSignedIn ] = useState (false)
+    // eslint-disable-next-line no-unused-vars
     const [ auth, setAuth ] = useState(false)
     const [ authToken, setAuthToken ] = useState()
     const [ ID, setID] = useState()
@@ -24,7 +25,8 @@ const AuthLayer = () => {
 
     useEffect(() => {
         handleAuthSetting()
-    }, [ID])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
 
     const handleAuthSetting = () => {
@@ -35,6 +37,7 @@ const AuthLayer = () => {
             setAuthToken(`${auth.tokenType + ' ' + auth.accessToken}`)
         }
     }
+
     const handleFirstNameChange = (event) => {
         setFirstName(event.target.value)
     }
@@ -80,16 +83,17 @@ const AuthLayer = () => {
 
     useEffect(() => {
         handleAuthSetting()
-        const signInImmediately = JSON.parse(localStorage.getItem('keep-signed-in-bookmarko'))
-        if(!existingUser && auth){
-            setUserName(signInImmediately.username)
-            setEncryptedPassword(signInImmediately.password)}
-        if(userName && encryptedPassword && !existingUser) {
-            checkSignedInRequested(signInImmediately)
-        } 
+        const signInImmediately = () => JSON.parse(localStorage.getItem('keep-signed-in-bookmarko'))
+        if(!signInScreen && signInImmediately()){
+            setUserName(signInImmediately().username)
+            setEncryptedPassword(signInImmediately().password)
+                if(userName && encryptedPassword && !signInScreen) {
+                    checkSignedInRequested(signInImmediately())
+        }}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userName, encryptedPassword])
 
-    const checkSignedInRequested = async (object) => {
+    const checkSignedInRequested = (object) => {
         if(object.keepsignedin){
             handleSignIn()
         }
@@ -122,7 +126,7 @@ const AuthLayer = () => {
             setSignedIn(true)
             setSignedOut(false)
             // change this
-            setExistingUser(false)
+            setSignInScreen(false)
         })
         .catch( err => console.error(err))
 
@@ -132,8 +136,9 @@ const AuthLayer = () => {
             setSignedOut(false)
             setNewUser(true)
     }
-    const handleExitSigninModal = () => {
-        setExistingUser(false); setSignedOut(true)
+    const handleExitSigninModal = (event) => {
+        event.preventDefault()
+        setSignInScreen(false); setSignedOut(true)
     }
     
     const handleSignedinCheckbox = (event) => {
@@ -143,8 +148,8 @@ const AuthLayer = () => {
         <>
         {   signedOut ? 
                 <div id='create-signup-wrapper'>
-                    <button onClick={() => {setNewUser(true); setSignedOut(false)}}>Create User</button>
-                    <button onClick={() => {setExistingUser(true); setSignedOut(false)}}>Sign in</button>
+                    <button className='filter button-hover' onClick={() => {setNewUser(true); setSignedOut(false)}}>Create Account</button>
+                    <button className='filter button-hover' onClick={() => {setSignInScreen(true); setSignedOut(false)}}>Sign in</button>
                 </div> 
                     : 
                 newUser 
@@ -166,7 +171,7 @@ const AuthLayer = () => {
                     </div>
                 )
                     :
-                existingUser ?
+                signInScreen ?
                     <div id='signin-wrapper'>
                         <form id='signin-form'>
                             <input onChange={handleUsernameChange} value={userName} placeholder='Pick a username' type='text'></input>
@@ -190,7 +195,7 @@ const AuthLayer = () => {
                         authToken={authToken} 
                         setSignedIn={setSignedIn} 
                         setSignedOut={setSignedOut} 
-                        setExistingUser={setExistingUser} 
+                        setExistingUser={setSignInScreen} 
                         setEncryptedPassword={setEncryptedPassword}
                         setPassword={setPassword}
                         setUserName={setUserName}

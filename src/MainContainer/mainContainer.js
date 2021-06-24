@@ -14,12 +14,13 @@ const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut,
     const [ userFilters, setUserFilters ] = useState([])
     const [ dateNewFirst, setDateNewFirst ] = useState(true)
 
-    const resetSelect = ( cssSelecter ) => {
-        document.querySelector( `#${cssSelecter}` ).selectedIndex = 0
+    const resetSelect = ( cssSelector ) => {
+        document.querySelector( `#${cssSelector}` ).selectedIndex = 0
     }
 
     useEffect(() => {
-        resetSelect('tags') ; resetSelect('user')
+        resetSelect('tags')
+        resetSelect('user')
     }, [active, filters, userFilters])
 
     const handleDeleteFilter = (e) => {
@@ -62,7 +63,8 @@ const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut,
 
     useEffect(() => {
         getLinksFromDatabase()
-    }, [ ,active,setAddLinksActive])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [active,setAddLinksActive])
 
     useEffect(() => {
         getLinksFromDatabase()
@@ -70,6 +72,7 @@ const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut,
             setBookmarks('')
             setID('')
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const config = {
@@ -89,8 +92,10 @@ const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut,
         axios.get(`${process.env.REACT_APP_SERVER_URL}api/tags?id=${id}`, config)
             .then(res => {
                 if(res.data.length > 0){
-                    const newTags = res.data.map((tag) => {
-                        return <option key={tag.id} value={tag.id}>{tag.tag}</option>
+                    const tags = res.data.map((tag) => tag.tag.toLowerCase())
+                    const uniqueTags = [...new Set(tags)]
+                    const newTags = uniqueTags.map((tag) => {
+                        return <option key={tag} value={tag}>{tag}</option>
                     })
                     setTags(newTags)
                 } else {
@@ -101,8 +106,10 @@ const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut,
         axios.get(`${process.env.REACT_APP_SERVER_URL}api/users?id=${id}`, config)
             .then(res => {
                 if(res.data.length > 0){
-                    const newUsers = res.data.map((user) => {
-                        return <option key={user.id} value={user.id}>{user.name}</option>
+                    const users = res.data.map((user) => user.name.toLowerCase())
+                    const uniqueUsers = [...new Set(users)]
+                    const newUsers = uniqueUsers.map((user) => {
+                        return <option key={user} value={user}>{user}</option>
                     })
                     setUsers(newUsers)
                 } else {
@@ -123,7 +130,7 @@ const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut,
         ) {
             for(let filter of userFilters) {
                 tempFilteredBookmarks = bookmarks.filter((bookmark) => {
-                    return bookmark.user.name === filter
+                    return bookmark.user.name.toLowerCase() === filter.toLowerCase()
                 })
                 newFilteredBookmarks.push(...tempFilteredBookmarks)
                 setFilteredBookmarks(dateSortLinks([...new Set(newFilteredBookmarks)]))
@@ -133,7 +140,7 @@ const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut,
         ){
             for(let filter of filters) {
                 tempFilteredBookmarks = bookmarks.filter((bookmark) => {
-                    return bookmark.tags[0].tag === filter || bookmark.user.name === filter
+                    return bookmark.tags[0].tag.toLowerCase() === filter.toLowerCase() || bookmark.user.name.toLowerCase() === filter.toLowerCase()
                 })
                 newFilteredBookmarks.push(...tempFilteredBookmarks)
                 setFilteredBookmarks(dateSortLinks([...new Set(newFilteredBookmarks)]))
@@ -145,7 +152,7 @@ const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut,
             for(let user of userFilters) {
 
                 tempFilteredBookmarks = bookmarks.filter((bookmark) => {
-                    return (bookmark.tags[0].tag === filter && bookmark.user.name === user)
+                    return (bookmark.tags[0].tag.toLowerCase() === filter.toLowerCase() && bookmark.user.name.toLowerCase() === user.toLowerCase())
                 })
                 newFilteredBookmarks.push(...tempFilteredBookmarks)
                 setFilteredBookmarks(dateSortLinks([...new Set(newFilteredBookmarks)]))
@@ -164,6 +171,7 @@ const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut,
 
     useEffect(() => {
         bookmarks.length > 0 && filterBookmarks() 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filters, userFilters, bookmarks])
 
     const bookmarkConditional = () => (filteredBookmarks.length > 0 ? filteredBookmarks : bookmarks)
@@ -177,7 +185,7 @@ const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut,
         bookmarkConditional().map((bookmark) => {
             return(
                 <li className='link' key={bookmark.id}>
-                    <a className="link-anchor" noopener rel="noreferrer" target="_blank" href={bookmark.linkURL}>{bookmark.linkTitle}</a>
+                    <a className="link-anchor" noopener='true' rel="noreferrer" target="_blank" href={bookmark.linkURL}>{bookmark.linkTitle}</a>
                     <p>{bookmark.tags[0].tag}</p>
                     <p>{bookmark.user.name}</p>
                     <p className="link-date">{formatDate(bookmark.dateAdded)}</p>
@@ -232,7 +240,7 @@ const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut,
                     null : 
                     <>
                         <button id="add-link-button" className="filter button-hover" onClick={()=> setAddLinksActive(true)}>add new bookmark</button>
-                        <button onClick={handleSignOut}>Sign out</button>
+                        <button className='filter button-hover' onClick={handleSignOut}>Sign out</button>
                     </>
                 }
                 </div>
