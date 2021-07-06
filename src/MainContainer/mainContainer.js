@@ -1,7 +1,9 @@
 import axios from 'axios'
 import React, {useEffect, useState} from 'react'
 import AddLinkContainer from '../AddLink/addLinkContainer'
+import Bookmark from '../bookmark/bookmark'
 import Filters from '../Filters/filters'
+import UserModal from '../Filters/userModal'
 
 const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut, setExistingUser, setEncryptedPassword, setUserName, setPassword}) => {
 
@@ -88,34 +90,39 @@ const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut,
                 setBookmarks(res)
                 setFilteredBookmarks(res)
             })
-
-        axios.get(`${process.env.REACT_APP_SERVER_URL}api/tags?id=${id}`, config)
-            .then(res => {
-                if(res.data.length > 0){
-                    const tags = res.data.map((tag) => tag.tag.toLowerCase())
-                    const uniqueTags = [...new Set(tags)]
-                    const newTags = uniqueTags.map((tag) => {
-                        return <option key={tag} value={tag}>{tag}</option>
+            .then(() => {
+                axios.get(`${process.env.REACT_APP_SERVER_URL}api/tags?id=${id}`, config)
+                    .then(res => {
+                        if(res.data.length > 0){
+                            const tags = res.data.map((tag) => tag.tag.toLowerCase())
+                            const uniqueTags = [...new Set(tags)]
+                            const newTags = uniqueTags.map((tag) => {
+                                return <option key={tag} value={tag}>{tag}</option>
+                            })
+                            console.log('should work', newTags)
+                            setTags(newTags)
+                        } else {
+                            return null
+                        }
                     })
-                    setTags(newTags)
-                } else {
-                    return null
-                }
+            })
+            .then(() => {
+                axios.get(`${process.env.REACT_APP_SERVER_URL}api/users?id=${id}`, config)
+                    .then(res => {
+                        if(res.data.length > 0){
+                            const users = res.data.map((user) => user.name.toLowerCase())
+                            const uniqueUsers = [...new Set(users)]
+                            const newUsers = uniqueUsers.map((user) => {
+                                return <option key={user} value={user}>{user}</option>
+                            })
+                            setUsers(newUsers)
+                        } else {
+                            return null
+                        }
+                     })
             })
 
-        axios.get(`${process.env.REACT_APP_SERVER_URL}api/users?id=${id}`, config)
-            .then(res => {
-                if(res.data.length > 0){
-                    const users = res.data.map((user) => user.name.toLowerCase())
-                    const uniqueUsers = [...new Set(users)]
-                    const newUsers = uniqueUsers.map((user) => {
-                        return <option key={user} value={user}>{user}</option>
-                    })
-                    setUsers(newUsers)
-                } else {
-                    return null
-                }
-             })
+
     }
 
     const filterBookmarks = () => {
@@ -184,12 +191,13 @@ const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut,
         <h2 id='nothing-to-see'>Nothing to see here at the moment &nbsp;  👀</h2> :
         bookmarkConditional().map((bookmark) => {
             return(
-                <li className='link' key={bookmark.id}>
-                    <a className="link-anchor" noopener='true' rel="noreferrer" target="_blank" href={bookmark.linkURL}>{bookmark.linkTitle}</a>
-                    <p>{bookmark.tags[0].tag}</p>
-                    <p>{bookmark.user.name}</p>
-                    <p className="link-date">{formatDate(bookmark.dateAdded)}</p>
-                </li>
+                <Bookmark
+                    key={bookmark.id}
+                    bookmark={bookmark}
+                    formatDate={formatDate}
+                    getLinksFromDatabase={getLinksFromDatabase}
+                    config={config}
+                />
             )
         })
 
@@ -238,9 +246,12 @@ const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut,
                 />
                 {addLinksActive ? 
                     null : 
-                    <>
-                        <button id="add-link-button" className="filter button-hover" onClick={()=> setAddLinksActive(true)}>add new bookmark</button>
-                        <button className='filter button-hover' onClick={handleSignOut}>Sign out</button>
+                    <>  
+                        <button id="add-link-button" className="filter button-hover" onClick={()=> setAddLinksActive(true)}>
+                            <p className='hidden-600'>add new bookmark</p>
+                            <p className='show-600'>+</p>
+                        </button>
+                        <button className='filter button-hover' id='sign-out-button' onClick={handleSignOut}>Sign out</button>
                     </>
                 }
                 </div>
@@ -263,6 +274,7 @@ const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut,
                     </ul>
                 </div>
             }
+            <UserModal handleSignOut={handleSignOut}/>
         </>
     )
 }

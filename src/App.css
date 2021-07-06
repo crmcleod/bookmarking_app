@@ -7,12 +7,22 @@
   height: 100vh;
   width: 100vw;
   /* background-image: linear-gradient(10deg, #57d5a9ee 30%, #5587cce3 30%), url('./staff_01.jpeg'); */
-  background-image: linear-gradient(10deg, #e4b95c 30%, #5587cce3 30%);
+  background-image: linear-gradient(357deg, #ffc671 6.5%, #5587cce3 6.6%);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: bottom;
   overflow: scroll;
   text-transform: lowercase;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+*::-webkit-scrollbar{
+  display: none;
+}
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 button, select {
   cursor: pointer;
@@ -32,10 +42,11 @@ button, select {
   color: #ffffffee;
   font-weight: 600;
   display: grid;
-  grid-template-columns: 1fr 1fr 10% 15%;
+  grid-template-columns: 1fr 1fr 10% 15% 1.5rem;
   transition: 0.2s ease all;
   grid-column-gap: 0.2rem;
   filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.274));
+  text-transform: capitalize;
 }
 .link:hover {
   background-color: rgba(0, 0, 0, 0.356);
@@ -52,17 +63,24 @@ button, select {
   overflow-y: scroll;
   overflow-x: hidden;
 }
+#link-wrapper > ul {
+  margin-block-start: 0 !important;
+  padding-inline-start: 0 !important;
+}
 #filter__wrapper {
   margin-top: 1rem;
   margin-bottom: 1rem;
   box-sizing: border-box;
-  width: 90vw;
-  padding: 0 5vw;
+  width: 80vw;
   display: flex;
-  flex-wrap: wrap;
   height: 3rem;
   align-content: center;
-
+  overflow-x: scroll !important;
+  overflow-y: hidden;
+  white-space: nowrap;
+  flex-direction: row;
+  scroll-snap-type: x mandatory;
+  
 }
 #filter__wrapper > p {
   align-content: center;
@@ -70,40 +88,38 @@ button, select {
   color: white;
   width: inherit;
   position: absolute;
+  width: 80vw;
+  text-transform: capitalize;
 }
 
 .filter{
   margin: 0.5rem;
   padding: 0.5rem 1rem;
   width: fit-content;
+  /* height: 1.1rem; */
   /* background-color: #57d5a9ee; */
-  background-color: #e4b95c;
+  background-color: #ffc671;
   color: white;
   border-radius: 2rem;
   text-transform: uppercase;
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 0 0.6rem .2rem rgba(0, 0, 0, 0.233);
+  scroll-snap-align: start;
 }
 .delete-cross {
   cursor: pointer;
+  color: rgb(70, 2, 2);
 }
-#header-wrapper{
-  margin-top: 2rem;
-  width: 70vw;
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
-}
+
 .button-hover {
   transition: 0.2s all ease;
 }
 .button-hover:hover{
-  transform: scale(1.05);
-  filter: brightness(120%);
+  text-align: center;
+  align-self: center;
+  transform: scale(1.02);
+  /* filter: brightness(90%); */
   color: rgb(58, 58, 58);
 }
 .link-date{
@@ -146,6 +162,18 @@ button, select {
 @media only screen and ( max-width: 850px ) {
   .link{
     width: 95%;
+    /* font-size: smaller; */
+    grid-template-columns: 1fr 1fr 1fr 15% 1rem;
+  }
+  #filter__wrapper{
+    width: 99vw;
+  }
+  #filter__wrapper p {
+    width: 100%;
+  }
+  .link:hover {
+    background-color: rgba(0, 0, 0, 0.356);
+    width: 95%;
   }
 }
 
@@ -184,10 +212,10 @@ button, select {
 #signup-form span button,
 #signin-form span button {
   width: 45%;
-  border: 0.1rem solid #e4b95c;
+  border: 0.1rem solid #ffc671;
   /* border: 0.1rem solid rgb(120, 187, 167); */
   /* background-image: linear-gradient(200deg, rgb(239, 245, 243), rgba(100, 197, 168, 0.267)) !important; */
-  background-image: linear-gradient(200deg, rgb(239, 245, 243), #e4b95c) !important;
+  background-image: linear-gradient(200deg, rgb(239, 245, 243), #ffc671) !important;
 }
 #sign-up-wrapper,
 #signin-wrapper{
@@ -215,4 +243,43 @@ button, select {
   color: white;
   display: flex;
   align-items: center;
+}
+#loading{
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: space-around;
+  align-content: center;
+}
+#loading h1{
+  margin: auto;
+  font-size: 5rem;
+}
+#more-info-ellipses{
+  display: none;
+  flex-direction: column;
+  height: 80%;
+  width: 0.5rem;
+  justify-content: space-evenly;
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+  align-items: center;
+  align-content: center;
+  transition: 0.3s all ease;
+  cursor: pointer;
+}
+#more-info-ellipses > span {
+  color: white;
+  font-size: 0.4rem;
+  transition: 0.2s all ease;
+
+}
+#more-info-ellipses:hover > span 
+{
+  color: #fcd37d;
+  transform: scale(1.3);
+}
+.link:hover > #more-info-ellipses {
+  display: flex;
 }

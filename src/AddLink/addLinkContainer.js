@@ -36,6 +36,12 @@ const AddLinkContainer = ({
     const [tagsFromDatabase, settagsFromDatabase] = useState([])
     const [filteredUsersFromDatabase, setFilteredUsersFromDatabase] = useState()
     const [filteredTagsFromDatabase, setFilteredTagsFromDatabase] = useState()
+    const [ linkModalActive, setLinkModalActive ] = useState(false)
+
+   
+    useEffect(() => {
+        setLinkModalActive(true)
+    }, [])
 
     useEffect(() => {
         setLink(linkObject)
@@ -44,9 +50,20 @@ const AddLinkContainer = ({
         setusersFromDatabase(uniqueRecords('users', 'name'))
         settagsFromDatabase(uniqueRecords('tags', 'tag'))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [active])
+    }, [active, linkModalActive])
 
+    // doesn't work properly yet
+    // useEffect(() => {
 
+    //     // need to bring arrow icon back after deleting again 
+
+    //     let userInput = document.querySelector('.add-link-user__datalist')
+    //     let tagInput = document.querySelector('.add-link-tag__datalist')
+
+    //     user.name && (userInput.style.backgroundImage = 'none')
+    //     tags[0].tag && (tagInput.style.backgroundImage = 'none')
+
+    // }, [user, tags])
 
     const handleLinkInput = (e) => {
         setLink({...link, linkURL: e.target.value})
@@ -63,6 +80,11 @@ const AddLinkContainer = ({
         })
         setFilteredUsersFromDatabase(filtered)
 
+        if(e.target.value.length === 0) {
+            setUser(userObject)
+            
+        }
+
     }
 
     const handleTagSelect = (e) => {
@@ -71,6 +93,9 @@ const AddLinkContainer = ({
             return tag.tag.toLowerCase().includes(e.target.value.toLowerCase())
         })
         setFilteredTagsFromDatabase(filtered)
+        if(e.target.value.length === 0) {
+            setTags(tagArray)
+        }
     }
 
     const getCustomDate = () => {
@@ -97,8 +122,8 @@ const AddLinkContainer = ({
     }
 
     const postData = () => {
-        if(filteredTagsFromDatabase.length > 0 && (filteredTagsFromDatabase[0].tag === tags[0].tag && filteredTagsFromDatabase.length === 1 && !tags[0][id])){setTags([...filteredTagsFromDatabase])}
-        if(filteredUsersFromDatabase.length > 0 && (filteredUsersFromDatabase[0].name === user.name && filteredUsersFromDatabase.length === 1 && !user[id])){setUser({...filteredUsersFromDatabase[0]})}
+        if(filteredTagsFromDatabase[0] && (filteredTagsFromDatabase[0].tag === tags[0].tag && filteredTagsFromDatabase.length === 1 && !tags[0][id])){setTags([...filteredTagsFromDatabase])}
+        if(filteredUsersFromDatabase[0] && (filteredUsersFromDatabase[0].name === user.name && filteredUsersFromDatabase.length === 1 && !user[id])){setUser({...filteredUsersFromDatabase[0]})}
         const userToPostId = filteredUsersFromDatabase ? filteredUsersFromDatabase.length === 1 ? filteredUsersFromDatabase[0].id : user : user
         const tagToPostId = filteredTagsFromDatabase ? filteredTagsFromDatabase.length === 1 ? filteredTagsFromDatabase[0].id : tags : tags
         const existingUser = filteredUsersFromDatabase && filteredUsersFromDatabase.length === 1
@@ -157,8 +182,8 @@ const AddLinkContainer = ({
                                 })
                         })
                     })
+                    getLinksFromDatabase()
             })
-            getLinksFromDatabase()
 
     }
 
@@ -190,19 +215,34 @@ const AddLinkContainer = ({
     }
 
     const handleFocus = (querySelector) => {
-        document.querySelector(querySelector).style.display='unset'
+        const selector = document.querySelector(querySelector)
+        if(selector) {
+            selector.style.display='unset'
+        }
     }
 
     const handleBlur = (querySelector) => {
-        document.querySelector(querySelector).style.display='none'
+        const selector = document.querySelector(querySelector)
+        if(selector) {
+            selector.style.display='none'
+        }
     }
+
+    const handleCloseAddLinkModal = (boolean) => {
+        setLinkModalActive(false)
+        setAddLinksActive(false)
+    }
+
     if( !active) return null
 
     return(
         <>
-            <form onSubmit={handleLinkSubmit}>
+            <form id='link-submission-form' onSubmit={handleLinkSubmit}>
                 <div className="add-link-wrapper">
-                    <p onClick={() => setAddLinksActive(false)} id="form-close-button">&#10005;</p>
+                    <p onClick={
+                        // () => setAddLinksActive(false)
+                        () => handleCloseAddLinkModal(false)
+                    } id="form-close-button">&#10005;</p>
                     <div className="add-link__input-wrapper">
                         <input className="add-link__input" required type="text" placeholder="Enter Link" onChange={handleLinkInput} value={link.linkURL} />
                         <input className="add-link__input add-link__input--description"  required type="text" placeholder="Enter Link description" onChange={handleLinkDescriptionInput} value={link.linkTitle} />
@@ -219,7 +259,7 @@ const AddLinkContainer = ({
                         </div>
                         {/* <input type="hidden" name="answer"/> */}
                         <div style={{'display': 'flex', 'flexDirection': 'column'}}>
-                            <input className="add-link__input add-link-tag__datalist" list="tags" type="search" placeholder="Search tags or add new" onFocus={() => handleFocus('.dropdown-tags')} onBlur={() => handleBlur('.dropdown-tags')} onChange={handleTagSelect} value={tags.length > 0 ? tags[0].tag : ""}/>
+                            <input className="add-link__input add-link-tag__datalist" list="tags" type="search" placeholder="Search tags or add new" onFocus={() => handleFocus('.dropdown-tags')} onBlur={() => handleBlur('.dropdown-tags')} onInput={handleTagSelect} onChange={handleTagSelect} value={tags.length > 0 ? tags[0].tag : ""}/>
                             {uniqueRecords('tags', 'tag').length > 0 && 
                             <DropDown 
                                 filtered={filteredTagsFromDatabase} 
@@ -229,7 +269,7 @@ const AddLinkContainer = ({
                                 setState={setTags}
                                 />}
                         </div>
-                        <button tabIndex type="submit" className="add-link__button">Add new link!</button>
+                        <button tabIndex='true' type="submit" className="add-link__button">Add new link!</button>
                     </div>
                 </div>
             </form>

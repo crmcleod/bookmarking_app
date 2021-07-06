@@ -2,6 +2,9 @@ import React, {useState, useEffect} from 'react'
 import MainContainer from '../MainContainer/mainContainer'
 import CryptoJs from 'crypto-js'
 import axios from 'axios'
+import SignIn from './signin'
+import SignUp from './signUp'
+import SignupSignin from './signupSignin'
 
 const tokenName = 'JWTBookmarkSite'
 
@@ -22,11 +25,22 @@ const AuthLayer = () => {
     const [ email, setEmail ] = useState()
     const [ encryptedPassword, setEncryptedPassword ] = useState()
     const [ userName, setUserName ] = useState()
+    const [ loading, setLoading ] = useState(true)
+    
+    const signInImmediately = () => JSON.parse(localStorage.getItem('keep-signed-in-bookmarko'))
 
     useEffect(() => {
-        handleAuthSetting()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+        if(auth && signInImmediately()) {
+            setTimeout(() => {
+                setSignedOut(false)
+                setLoading(false)
+            }, 1000)
+        } else {
+            setTimeout(() => {
+                setLoading(false)
+            }, 500)
+        }
+    },[auth])
 
 
     const handleAuthSetting = () => {
@@ -80,10 +94,10 @@ const AuthLayer = () => {
         .then(() => handleAuthSetting())
         .catch(err => console.log(err))
     }
+    
 
     useEffect(() => {
         handleAuthSetting()
-        const signInImmediately = () => JSON.parse(localStorage.getItem('keep-signed-in-bookmarko'))
         if(!signInScreen && signInImmediately()){
             setUserName(signInImmediately().username)
             setEncryptedPassword(signInImmediately().password)
@@ -144,64 +158,72 @@ const AuthLayer = () => {
     const handleSignedinCheckbox = (event) => {
         setKeepSignedIn(event.target.checked)
     }
+
+    if(loading){
+        return(
+            <div id='loading'>
+                <h1>⏱</h1>
+            </div>
+        )
+    }
+
     return(
         <>
-        {   signedOut ? 
-                <div id='create-signup-wrapper'>
-                    <button className='filter button-hover' onClick={() => {setNewUser(true); setSignedOut(false)}}>Create Account</button>
-                    <button className='filter button-hover' onClick={() => {setSignInScreen(true); setSignedOut(false)}}>Sign in</button>
-                </div> 
+            {   signedOut ? 
+                    <SignupSignin 
+                        setNewUser={setNewUser}
+                        setSignedOut={setSignedOut}
+                        setSignInScreen={setSignInScreen}
+                    /> 
                     : 
-                newUser 
+                    newUser 
                     ? 
-                    
-                (
-                    <div id='sign-up-wrapper'>
-                        <form id='signup-form'>
-                            <input onChange={handleFirstNameChange} value={firstName} placeholder='First Name' type='text'></input>
-                            <input onChange={handleLastNameChange} value={lastName} placeholder='Last name' type='text'></input>
-                            <input onChange={handleUsernameChange} value={userName} placeholder='Pick a username' type='text'></input>
-                            <input onChange={handlePasswordChange} value={password} placeholder='Password' type='password'></input>
-                            <input onChange={handleEmailChange} value={email} placeholder='Email address' type='email'></input>
-                            <span>
-                                <button onClick={handleExitSignupModal}>Cancel</button>    
-                                <button onClick={handleSignUp}>Create account</button>
-                            </span>
-                        </form>
-                    </div>
-                )
-                    :
-                signInScreen ?
-                    <div id='signin-wrapper'>
-                        <form id='signin-form'>
-                            <input onChange={handleUsernameChange} value={userName} placeholder='Pick a username' type='text'></input>
-                            <input onChange={handlePasswordChange} value={password} placeholder='Password' type='password'></input>
-                            <span id='keep-signed-in'>
-                                <input onChange={handleSignedinCheckbox} checked={keepSignedIn} type='checkbox' name='stay-signed-in'></input>
-                                <label for='stay-signed-in'>Keep me signed in</label>
-                            </span>
-                            <span>
-                                <button onClick={handleExitSigninModal}>Cancel</button>    
-                                <button onClick={handleSignInFromForm}>Sign in</button>
-                            </span>
-                        </form>
-                    </div>
-                    :
-                    signedIn ? 
-                    <MainContainer 
-                        setID={setID} 
-                        id={ID} 
-                        active={signedIn} 
-                        authToken={authToken} 
-                        setSignedIn={setSignedIn} 
-                        setSignedOut={setSignedOut} 
-                        setExistingUser={setSignInScreen} 
-                        setEncryptedPassword={setEncryptedPassword}
-                        setPassword={setPassword}
-                        setUserName={setUserName}
+                    (
+                        <SignUp 
+                            handleFirstNameChange={handleFirstNameChange}
+                            firstName={firstName}
+                            handleLastNameChange={handleLastNameChange}
+                            lastName={lastName}
+                            handleUsernameChange={handleUsernameChange}
+                            userName={userName}
+                            handlePasswordChange={handlePasswordChange}
+                            password={password}
+                            handleEmailChange={handleEmailChange}
+                            email={email}
+                            handleExitSignupModal={handleExitSignupModal}
+                            handleSignUp={handleSignUp}
                         />
-                :
-                null
+                    )
+                    :
+                    signInScreen 
+                    ?
+                       <SignIn 
+                            handleUsernameChange={handleUsernameChange}
+                            userName={userName}
+                            handlePasswordChange={handlePasswordChange}
+                            password={password}
+                            handleSignedinCheckbox={handleSignedinCheckbox}
+                            keepSignedIn={keepSignedIn}
+                            handleExitSigninModal={handleExitSigninModal}
+                            handleSignInFromForm={handleSignInFromForm}
+                       />
+                    :
+                    signedIn 
+                    ? 
+                        <MainContainer
+                            setID={setID} 
+                            id={ID} 
+                            active={signedIn} 
+                            authToken={authToken} 
+                            setSignedIn={setSignedIn} 
+                            setSignedOut={setSignedOut} 
+                            setExistingUser={setSignInScreen} 
+                            setEncryptedPassword={setEncryptedPassword}
+                            setPassword={setPassword}
+                            setUserName={setUserName}
+                            />
+                    :
+                    null
             }
         </>
     )

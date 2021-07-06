@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 import './filters.css'
 
@@ -15,20 +15,36 @@ const Filters = ({
     setUserFilters
 }) => {
    
-    const handleTagSelect = (e) => {
-        const sel = e.target.options
-        const newFilters = [...filters]
-        newFilters.push(sel[sel.selectedIndex].text)
-        const uniqueFilters = [...new Set(newFilters)];
-        setFilters(uniqueFilters)
-    }
+    const totalFilters = () => [...filters, ...userFilters]
 
+    const [allFilters, setAllFilters] = useState(totalFilters())
+
+    const handleTagSelect = (e) => {
+        if(totalFilters().length < 6) {
+            const sel = e.target.options
+            const newFilters = [...filters]
+            newFilters.push(sel[sel.selectedIndex].text)
+            const uniqueFilters = [...new Set(newFilters)];
+            setFilters(uniqueFilters)
+        } else {
+            // replace with custom modal
+            alert('Remove filters before adding more')
+        }
+
+    }
+    
     const handleUserSelect = (e) => {
-        const sel = e.target.options
-        const newFilters = [...userFilters]
-        newFilters.push(sel[sel.selectedIndex].text)
-        const uniqueFilters = [...new Set(newFilters)];
-        setUserFilters(uniqueFilters)
+        if(totalFilters().length < 6) {
+            const sel = e.target.options
+            const newFilters = [...userFilters]
+            newFilters.push(sel[sel.selectedIndex].text)
+            const uniqueFilters = [...new Set(newFilters)];
+            setUserFilters(uniqueFilters)
+        } else {
+            // replace with custom modal
+            alert('Remove filters before adding more')
+        }
+        
     } 
 
     const handleDateSortClick = () => {
