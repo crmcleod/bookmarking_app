@@ -111,11 +111,9 @@ const AddLinkContainer = ({
     const checkLinkPrefix = ( x ) => {
         if ( x.includes('http', 'https')){
             setLink({...link, linkURL: x})
-            console.log('contains')
             return ''
         } else {
             setLink({...link, linkURL: 'https://'+x})
-            console.log('!contains')
 
             return 'https://'
         }
@@ -128,7 +126,6 @@ const AddLinkContainer = ({
         const tagToPostId = filteredTagsFromDatabase ? filteredTagsFromDatabase.length === 1 ? filteredTagsFromDatabase[0].id : tags : tags
         const existingUser = filteredUsersFromDatabase && filteredUsersFromDatabase.length === 1
         const existingTag = filteredTagsFromDatabase && filteredTagsFromDatabase.length === 1
-        console.log(existingUser, existingTag)
     
         if(existingUser ) {
             axios.post(`${process.env.REACT_APP_SERVER_URL}api/links`, { ...link,

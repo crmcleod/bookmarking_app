@@ -99,7 +99,6 @@ const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut,
                             const newTags = uniqueTags.map((tag) => {
                                 return <option key={tag} value={tag}>{tag}</option>
                             })
-                            console.log('should work', newTags)
                             setTags(newTags)
                         } else {
                             return null
