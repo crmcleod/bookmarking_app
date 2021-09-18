@@ -15,11 +15,15 @@ const Bookmark = ({
                 .catch(err => console.error(err))
         }
     }
-
+    if(!bookmark) {
+        return(
+            <li className='link'>Loading...</li>
+        )
+    }
     return(
         <li className='link' key={bookmark.id}>
             <a className="link-anchor" noopener='true' rel="noreferrer" target="_blank" href={bookmark.linkURL}>{bookmark.linkTitle}</a>
-            <p>{bookmark.tags[0].tag}</p>
+            <p>{bookmark ? bookmark.tags[0].tag : '....'}</p>
             <p>{bookmark.user.name}</p>
             <p className="link-date">{formatDate(bookmark.dateAdded)}</p>
             <div onClick={() => handleEllipsesClick(bookmark.id)} id='more-info-ellipses'>

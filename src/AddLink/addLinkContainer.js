@@ -82,7 +82,6 @@ const AddLinkContainer = ({
 
         if(e.target.value.length === 0) {
             setUser(userObject)
-            
         }
 
     }
@@ -119,39 +118,42 @@ const AddLinkContainer = ({
         }
     }
 
-    const postData = () => {
-        if(filteredTagsFromDatabase[0] && (filteredTagsFromDatabase[0].tag === tags[0].tag && filteredTagsFromDatabase.length === 1 && !tags[0][id])){setTags([...filteredTagsFromDatabase])}
-        if(filteredUsersFromDatabase[0] && (filteredUsersFromDatabase[0].name === user.name && filteredUsersFromDatabase.length === 1 && !user[id])){setUser({...filteredUsersFromDatabase[0]})}
-        const userToPostId = filteredUsersFromDatabase ? filteredUsersFromDatabase.length === 1 ? filteredUsersFromDatabase[0].id : user : user
+    const postData = (e) => {
+        if(filteredTagsFromDatabase.length > 0 && (filteredTagsFromDatabase[0].tag === tags[0].tag && filteredTagsFromDatabase.length === 1 && !tags[0][id])){setTags([filteredTagsFromDatabase[0]])}
+        if(filteredUsersFromDatabase.length > 0 && (filteredUsersFromDatabase[0].name === user.name && filteredUsersFromDatabase.length === 1 && !user[id])){setUser({...filteredUsersFromDatabase[0]})}
+        const userToPostId = filteredUsersFromDatabase ? filteredUsersFromDatabase.length === 1 && (filteredUsersFromDatabase[0].name.length === user.name.length) ? filteredUsersFromDatabase[0].id : user : user
         const tagToPostId = filteredTagsFromDatabase ? filteredTagsFromDatabase.length === 1 ? filteredTagsFromDatabase[0].id : tags : tags
-        const existingUser = filteredUsersFromDatabase && filteredUsersFromDatabase.length === 1
+        const existingUser = filteredUsersFromDatabase && filteredUsersFromDatabase.length === 1 && (filteredUsersFromDatabase[0].name.length === user.name.length)
         const existingTag = filteredTagsFromDatabase && filteredTagsFromDatabase.length === 1
-    
-        if(existingUser ) {
-            axios.post(`${process.env.REACT_APP_SERVER_URL}api/links`, { ...link,
+
+        if( existingUser ) {
+            const linkBody = { ...link,
                 "linkURL": checkLinkPrefix(link.linkURL)+link.linkURL,
                 "user": {"id": userToPostId },
                 "dateAdded": `${getCustomDate()}`,
-                "tags": existingTag && [{id: tagToPostId }],
+                "tags": existingTag ? [{id: tagToPostId }] : null,
                 "appUser": {
                     "id": id
                 }
-            }, authToken)
+            }
+            console.log(linkBody['user'])
+            axios.post(`${process.env.REACT_APP_SERVER_URL}api/links`, linkBody , authToken)
                 .then( res => {
-                    !existingTag &&
-                    axios.post(`${process.env.REACT_APP_SERVER_URL}api/tags`,{
+                    const tagBody = {
                         "tag": tags[0].tag,
                         "links": [{
                             "id": res.data.id
                         }]
-                    }, authToken)
+                    }
+                    !existingTag &&
+                    axios.post(`${process.env.REACT_APP_SERVER_URL}api/tags`, tagBody, authToken)
                     .then( res => {
                         axios.get(`${process.env.REACT_APP_SERVER_URL}api/links/${res.data.links[0].id}`, authToken)
                             .then( res => {
                                 setBookmarks([...bookmarks, res.data])
-                            })
-                    })
-                })
+                            }).catch(err => console.error(err))
+                    }).catch(err => console.error(err))
+                }).catch(err => console.error(err))
         } else if(!existingUser)
         axios.post(`${process.env.REACT_APP_SERVER_URL}api/users`, user, authToken)
             .then( res => {
@@ -181,7 +183,12 @@ const AddLinkContainer = ({
                     })
                     getLinksFromDatabase()
             })
+            resetSelectors()
+    }
 
+    const resetSelectors = () => {
+        setFilteredUsersFromDatabase(usersFromDatabase)
+        setFilteredTagsFromDatabase(tagsFromDatabase)
     }
 
     const handleLinkSubmit = (e) => {
@@ -244,7 +251,7 @@ const AddLinkContainer = ({
                         <input className="add-link__input" required type="text" placeholder="Enter Link" onChange={handleLinkInput} value={link.linkURL} />
                         <input className="add-link__input add-link__input--description"  required type="text" placeholder="Enter Link description" onChange={handleLinkDescriptionInput} value={link.linkTitle} />
                         <div style={{'display': 'flex', 'flexDirection': 'column'}}>
-                            <input className="add-link-user__datalist add-link__input" type="search" required list="user" placeholder="Search users or add new" onChange={handleUserInput} value={user.name} onFocus={() => handleFocus('.dropdown-users')} onBlur={() => handleBlur('.dropdown-users')}></input>
+                            <input className="add-link-user__datalist add-link__input" type="search" required list="user" placeholder="Search users or add new" onInput={handleUserInput} onChange={(event) => handleUserInput(event)} value={user.name} onFocus={() => handleFocus('.dropdown-users')} onBlur={() => handleBlur('.dropdown-users')}></input>
                             {uniqueRecords('users', 'name').length > 0 && 
                             <DropDown 
                                 filtered={filteredUsersFromDatabase} 
