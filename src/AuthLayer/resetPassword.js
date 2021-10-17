@@ -29,7 +29,7 @@ const ResetPassword = (props) => {
     };
 
     const cancel = () => {
-        window.location.href='http://localhost:3000/'
+        window.location.href='https://bookmarko-client.herokuapp.com/'
     }
 
     useEffect(() => {

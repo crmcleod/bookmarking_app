@@ -129,7 +129,7 @@ const AuthLayer = () => {
     }
 
     const handleSignIn = () => {
-        axios.post(`${process.env.REACT_APP_SERVER_URL}authenticate/signin`,
+        axios.post(`${process.env.REACT_APP_SERVER_URL}/authenticate/signin`,
         {
             "username": userName,
             "password": encryptedPassword
