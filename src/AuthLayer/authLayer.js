@@ -80,7 +80,7 @@ const AuthLayer = () => {
 
     const handleSignUp = (event) => {
         event.preventDefault()
-        axios.post(`${process.env.REACT_APP_SERVER_URL}authenticate/signup`,
+        axios.post(`${process.env.REACT_APP_SERVER_URL}/authenticate/signup`,
             {
             "firstName": firstName,
             "lastName": lastName,
