@@ -5,6 +5,10 @@ import axios from 'axios'
 import SignIn from './signin'
 import SignUp from './signUp'
 import SignupSignin from './signupSignin'
+import ForgottenPassword from './forgottenPassword'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import ResetPassword from './resetPassword'
+
 
 const tokenName = 'JWTBookmarkSite'
 
@@ -14,6 +18,7 @@ const AuthLayer = () => {
     const [ signInScreen, setSignInScreen ] = useState(false)
     const [ signedOut, setSignedOut ] = useState(true)
     const [ signedIn, setSignedIn ] = useState(false)
+    const [ forgottenPass, setForgottenPass ] = useState(false)
     const [ keepSignedIn, setKeepSignedIn ] = useState (false)
     // eslint-disable-next-line no-unused-vars
     const [ auth, setAuth ] = useState(false)
@@ -66,7 +71,7 @@ const AuthLayer = () => {
 
     const handlePasswordChange = (event) => {
         setPassword(event.target.value)
-        setEncryptedPassword((CryptoJs.SHA3(password)).toString())
+        setEncryptedPassword((CryptoJs.SHA3(event.target.value)).toString())
     }
 
     const handleEmailChange = (event) => {
@@ -168,12 +173,17 @@ const AuthLayer = () => {
     }
 
     return(
-        <>
+        <Router>
+            <Switch>
+                <Route path="/resetPassword/:id"
+                render={(props) => <ResetPassword {...props}/>}/>
+
             {   signedOut ? 
                     <SignupSignin 
                         setNewUser={setNewUser}
                         setSignedOut={setSignedOut}
                         setSignInScreen={setSignInScreen}
+                        setForgottenPass={setForgottenPass}
                     /> 
                     : 
                     newUser 
@@ -223,9 +233,16 @@ const AuthLayer = () => {
                             setUserName={setUserName}
                             />
                     :
+                    forgottenPass
+                    ?
+                        <ForgottenPassword
+                            setForgottenPass={setForgottenPass}
+                        />
+                    :
                     null
             }
-        </>
+        </Switch>
+        </Router>
     )
 }
 
