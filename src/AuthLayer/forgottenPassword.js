@@ -12,7 +12,7 @@ const ForgottenPassword = () => {
 
     const submitReset = (event) => {
         event.preventDefault();
-        axios.post(process.env.REACT_APP_SERVER_URL+"/recover/requestrecovery", email)
+        axios.post(process.env.REACT_APP_SERVER_URL+"recover/requestrecovery", email)
     };
 
     return(

@@ -84,14 +84,14 @@ const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut,
     }
     const getLinksFromDatabase = () => {
        
-        axios.get(`${process.env.REACT_APP_SERVER_URL}api/links?id=${id}`, config)
+        axios.get(`${process.env.REACT_APP_SERVER_URL}/api/links?id=${id}`, config)
             .then(res => dateSortLinks(res.data))
             .then(res => {
                 setBookmarks(res)
                 setFilteredBookmarks(res)
             })
             .then(() => {
-                axios.get(`${process.env.REACT_APP_SERVER_URL}api/tags?id=${id}`, config)
+                axios.get(`${process.env.REACT_APP_SERVER_URL}/api/tags?id=${id}`, config)
                     .then(res => {
                         if(res.data.length > 0){
                             const tags = res.data.map((tag) => tag.tag.toLowerCase())
@@ -106,7 +106,7 @@ const MainContainer = ({id, authToken, active, setID, setSignedIn, setSignedOut,
                     })
             })
             .then(() => {
-                axios.get(`${process.env.REACT_APP_SERVER_URL}api/users?id=${id}`, config)
+                axios.get(`${process.env.REACT_APP_SERVER_URL}/api/users?id=${id}`, config)
                     .then(res => {
                         if(res.data.length > 0){
                             const users = res.data.map((user) => user.name.toLowerCase())
