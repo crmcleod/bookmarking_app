@@ -10,7 +10,7 @@ const Bookmark = ({
 
     const handleEllipsesClick = (id) => {
         if(window.confirm('Delete this bookmark?')){
-            axios.delete(`${process.env.REACT_APP_SERVER_URL}api/links/${id}`, config)
+            axios.delete(`${process.env.REACT_APP_SERVER_URL}/api/links/${id}`, config)
                 .then(() => getLinksFromDatabase())
                 .catch(err => console.error(err))
         }

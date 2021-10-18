@@ -25,7 +25,7 @@ const ResetPassword = (props) => {
             const encryptedPassword = (CryptoJS.SHA3(password)).toString()
             const reqestResetBody = {"token": props.match.params.id, "password": encryptedPassword}
             console.log(reqestResetBody)
-            axios.post(process.env.REACT_APP_SERVER_URL+"recover/request_reset", reqestResetBody)}
+            axios.post(process.env.REACT_APP_SERVER_URL+"/recover/request_reset", reqestResetBody)}
     };
 
     const cancel = () => {
