@@ -176,7 +176,8 @@ button, select {
   }
 }
 
-#signup-form{
+#signup-form
+{
   padding: 5rem;
   border-radius: 0.3rem;
   display: flex;
@@ -189,7 +190,11 @@ button, select {
   background-color: rgba(0, 0, 0, 0.521);
   box-shadow: 0rem 0.3rem 1rem 0.3rem rgba(0, 0, 0, 0.486);
 }
-#signup-form > span > input, button {
+/* #signup-form > span > input,  */
+input[type=button],
+input[type=submit],
+#reset-by-email
+{
   padding: 0.5rem;
   border: none;
   outline: none;
@@ -209,12 +214,25 @@ button, select {
 
 }
 #signup-form span button,
-#signin-form span button {
+#signin-form span button,
+#signin-buttons input,
+#signup-buttons input,
+.bookmarko-button {
   width: 45%;
+  padding: 0.5rem 0rem;
   border: 0.1rem solid #ffc671;
-  /* border: 0.1rem solid rgb(120, 187, 167); */
-  /* background-image: linear-gradient(200deg, rgb(239, 245, 243), rgba(100, 197, 168, 0.267)) !important; */
   background-image: linear-gradient(200deg, rgb(239, 245, 243), #ffc671) !important;
+  cursor: pointer;
+}
+.bookmarko-button{
+  border-radius: 0.2rem !important;
+  border: 0.1rem solid #ffc671 !important;
+
+}
+#signin-form span button:focus,
+.bookmarko-button:focus{
+  filter: contrast(90%);
+  color: rgb(116, 116, 116);
 }
 #sign-up-wrapper,
 #signin-wrapper{
@@ -223,7 +241,9 @@ button, select {
   display: flex;
   flex-direction: column;
 }
-#signin-form{
+#signin-form,
+#password-reset-form,
+#request-password-reset-form{
   padding: 3rem;
   border-radius: 0.3rem;
   display: flex;
@@ -235,6 +255,24 @@ button, select {
   height: 12rem;
   background-color: rgba(0, 0, 0, 0.521);
   box-shadow: 0rem 0.3rem 1rem 0.3rem rgba(0, 0, 0, 0.486);
+  text-transform: none;
+}
+#request-password-reset-form{
+  height: 16rem;
+  width: 22rem !important;
+  color: rgb(207, 207, 207);
+}
+#request-password-reset-form input:not(input[type=button]){
+  padding: 0.5rem;
+  margin: 0.2rem;
+}
+#request-password-reset-form input[type=button]{
+  margin: 0.4rem !important;
+}
+#password-reset-form{
+  height: 20rem;
+  width: 30rem !important;
+  padding: 2rem 0 !important;
 }
 #keep-signed-in, #keep-signed-in *{
   justify-content: unset !important;
@@ -281,4 +319,40 @@ button, select {
 }
 .link:hover > #more-info-ellipses {
   display: flex;
+}
+
+#password-reset-form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#password-reset-form * {
+  margin: 0.5rem;
+  width: 85%;
+}
+#password-reset-form h1,
+#password-reset-form p,
+#password-reset-form label {
+  color: rgb(203, 217, 243);
+  text-transform: none;
+}
+#password-reset-form span {
+  /* width: 100%; */
+  display: flex;
+  /* justify-content: space-evenly; */
+}
+#reset-by-email{
+  width: 75%;
+}
+#label-div{
+  width: 100%;
+  margin-bottom: -1rem;
+}
+#pass-match{
+  background-color: rgba(255, 255, 255, 0.616);
+  border-radius: 0.5rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  color: white;
+color: rgb(95, 204, 255);
 }

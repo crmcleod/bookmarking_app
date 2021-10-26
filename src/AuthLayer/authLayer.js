@@ -151,13 +151,20 @@ const AuthLayer = () => {
 
     }
 
-    const handleExitSignupModal = () => {
-            setSignedOut(false)
-            setNewUser(true)
+    const handleExitSignupModal = (e) => {
+            e.preventDefault()
+            setSignedOut(true)
+            setNewUser(false)
     }
     const handleExitSigninModal = (event) => {
         event.preventDefault()
         setSignInScreen(false); setSignedOut(true)
+    }
+
+    const handleExitReset = () => {
+        setSignInScreen(true)
+        setSignedOut(true)
+        setForgottenPass(false)
     }
     
     const handleSignedinCheckbox = (event) => {
@@ -237,6 +244,7 @@ const AuthLayer = () => {
                     ?
                         <ForgottenPassword
                             setForgottenPass={setForgottenPass}
+                            handleExitReset={handleExitReset}
                         />
                     :
                     null

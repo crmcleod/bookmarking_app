@@ -137,7 +137,7 @@ const AddLinkContainer = ({
                 }
             }
             console.log(linkBody['user'])
-            axios.post(`${process.env.REACT_APP_SERVER_URL}api/links`, linkBody , authToken)
+            axios.post(`${process.env.REACT_APP_SERVER_URL}/api/links`, linkBody , authToken)
                 .then( res => {
                     const tagBody = {
                         "tag": tags[0].tag,
@@ -146,18 +146,18 @@ const AddLinkContainer = ({
                         }]
                     }
                     !existingTag &&
-                    axios.post(`${process.env.REACT_APP_SERVER_URL}api/tags`, tagBody, authToken)
+                    axios.post(`${process.env.REACT_APP_SERVER_URL}/api/tags`, tagBody, authToken)
                     .then( res => {
-                        axios.get(`${process.env.REACT_APP_SERVER_URL}api/links/${res.data.links[0].id}`, authToken)
+                        axios.get(`${process.env.REACT_APP_SERVER_URL}/api/links/${res.data.links[0].id}`, authToken)
                             .then( res => {
                                 setBookmarks([...bookmarks, res.data])
                             }).catch(err => console.error(err))
                     }).catch(err => console.error(err))
                 }).catch(err => console.error(err))
         } else if(!existingUser)
-        axios.post(`${process.env.REACT_APP_SERVER_URL}api/users`, user, authToken)
+        axios.post(`${process.env.REACT_APP_SERVER_URL}/api/users`, user, authToken)
             .then( res => {
-                axios.post(`${process.env.REACT_APP_SERVER_URL}api/links`, { ...link,
+                axios.post(`${process.env.REACT_APP_SERVER_URL}/api/links`, { ...link,
                     "linkURL": checkLinkPrefix(link.linkURL)+link.linkURL,
                     "user": {"id": res.data.id },
                     "dateAdded": `${getCustomDate()}`,
@@ -168,14 +168,14 @@ const AddLinkContainer = ({
                 }, authToken)
                     .then( res => {
                         !existingTag &&
-                        axios.post(`${process.env.REACT_APP_SERVER_URL}api/tags`,{
+                        axios.post(`${process.env.REACT_APP_SERVER_URL}/api/tags`,{
                             "tag": tags[0].tag,
                             "links": [{
                                 "id": res.data.id
                             }]
                         }, authToken)
                         .then( res => {
-                            axios.get(`${process.env.REACT_APP_SERVER_URL}api/links/${res.data.links[0].id}`, authToken)
+                            axios.get(`${process.env.REACT_APP_SERVER_URL}/api/links/${res.data.links[0].id}`, authToken)
                                 .then( res => {
                                     setBookmarks([...bookmarks, res.data])
                                 })

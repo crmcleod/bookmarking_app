@@ -24,7 +24,6 @@ const ResetPassword = (props) => {
             event.preventDefault()
             const encryptedPassword = (CryptoJS.SHA3(password)).toString()
             const reqestResetBody = {"token": props.match.params.id, "password": encryptedPassword}
-            console.log(reqestResetBody)
             axios.post(process.env.REACT_APP_SERVER_URL+"/recover/request_reset", reqestResetBody)}
     };
 
@@ -37,15 +36,20 @@ const ResetPassword = (props) => {
     }, [password, confirmPassword])
 
     return(
-        <>
-            <h1>Reset password page</h1>
+        <form id='request-password-reset-form' onSubmit={resetPassword}>
+            <h1>Confirm New Password</h1>
             <input type='password' onChange={updatePassword} placeholder='New Password'/>
             <input type='password' onChange={updateConfirmPassword} placeholder='Confirm new password'/>
-            <input type='button' onClick={resetPassword} value='Confirm'></input>
-            <input type='button' onClick={cancel} value='Cancel' />
-            {match ? <h2>Passwords match</h2> : <h2>Passwords don't match</h2>}
-
-        </>
+            <span>
+                <input className='bookmarko-button' type='button' onClick={cancel} value='Cancel' />
+                <input className='bookmarko-button' type='submit' onClick={resetPassword} value='Confirm'></input>
+            </span>
+            {/* { password || confirmPassword ? */}
+            <div id='pass-match'>
+                {match ? <h2 style={{color: 'rgb(195, 254, 255)'}}>Passwords match</h2> : <h2 style={{color: 'red'}}>Passwords don't match</h2>}
+            </div>
+{/* : null} */}
+        </form>
     )
 }
 
