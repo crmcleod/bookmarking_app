@@ -16,7 +16,7 @@ const Bookmark = ({
         }
     }
     // console.log(bookmark)
-    if(!bookmark.tags) {
+    if(!bookmark.tags[0].tag) {
         return(
             <li className='link'>Loading...</li>
         )
